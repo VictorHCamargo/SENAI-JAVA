@@ -10,12 +10,5 @@
         <maven.compiler.release>21</maven.compiler.release>
         <exec.mainClass>edu.victorhcamargo.e_shop.E_shop</exec.mainClass>
     </properties>
-    <dependencies>
-        <dependency>
-            <groupId>org.projectlombok</groupId>
-            <artifactId>lombok</artifactId>
-            <version>1.18.38</version>
-            <type>jar</type>
-        </dependency>
-    </dependencies>
+    
 </project>
