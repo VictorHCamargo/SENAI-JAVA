@@ -43,7 +43,7 @@ public class E_shop {
                                    reader.readLine()
         );
         String nome;
-        nome = "\nDigite seu nome: " + reader.readLine();
+        nome = reader.readLine();
         float preco;
         preco = Float.parseFloat(reader.readLine());
         float saldo;
