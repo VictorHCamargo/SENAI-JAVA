@@ -4,6 +4,7 @@
  */
 package edu.victorhcamargo.padaria.Interface;
 
+import javax.swing.JTextArea;
 import model.Produto;
 
 /**
@@ -31,12 +32,12 @@ public class Principal extends javax.swing.JFrame {
         p4 = new Produto(4,25.90,"Pão Australiano");
         p5 = new Produto(5,27.90,"Pão Semolina");
         p6 = new Produto(6,40.90,"Pão Caseiro");
-        jComboBox1.addItem(p1.getDescricao());
-        jComboBox1.addItem(p2.getDescricao());
-        jComboBox1.addItem(p3.getDescricao());
-        jComboBox1.addItem(p4.getDescricao());
-        jComboBox1.addItem(p5.getDescricao());
-        jComboBox1.addItem(p6.getDescricao());
+        jComboBox1.addItem(p1);
+        jComboBox1.addItem(p2);
+        jComboBox1.addItem(p3);
+        jComboBox1.addItem(p4);
+        jComboBox1.addItem(p5);
+        jComboBox1.addItem(p6);
     }
     
     /**
@@ -58,6 +59,7 @@ public class Principal extends javax.swing.JFrame {
         jTextArea3 = new javax.swing.JTextArea();
         jButton4 = new javax.swing.JButton();
         jComboBox1 = new javax.swing.JComboBox<>();
+        jSpinner1 = new javax.swing.JSpinner();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -94,7 +96,7 @@ public class Principal extends javax.swing.JFrame {
             }
         });
 
-        jComboBox1.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Selecione um produto" }));
+        jSpinner1.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -104,7 +106,10 @@ public class Principal extends javax.swing.JFrame {
                 .addGap(170, 170, 170)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton2))
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jButton2)
+                        .addGap(28, 28, 28)
+                        .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addGap(98, 98, 98)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -135,7 +140,9 @@ public class Principal extends javax.swing.JFrame {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton2)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jButton2)
+                            .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap(113, Short.MAX_VALUE))
@@ -143,20 +150,27 @@ public class Principal extends javax.swing.JFrame {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
-
+    public void fazerCompra(JTextArea areaDestino) {
+        double total = ((Produto)jComboBox1.getSelectedItem()).getPreco() * Integer.parseInt(jSpinner1.getValue().toString());
+        areaDestino.append(jSpinner1.getValue().toString());
+        areaDestino.append("x ");
+        areaDestino.append(jComboBox1.getSelectedItem().toString());
+        areaDestino.append(" = " + total);
+        areaDestino.append("\n");
+    }
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
-        jTextArea1.setText(p2.getDescricao());
+        fazerCompra(jTextArea1);
     }//GEN-LAST:event_jButton2ActionPerformed
 
     private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
         // TODO add your handling code here:
-        jTextArea2.setText(p3.getDescricao());
+        fazerCompra(jTextArea2);
     }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
         // TODO add your handling code here:
-        jTextArea3.setText(p1.getDescricao());
+        fazerCompra(jTextArea3);
     }//GEN-LAST:event_jButton4ActionPerformed
 
     /**
@@ -188,10 +202,11 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
-    private javax.swing.JComboBox<String> jComboBox1;
+    private javax.swing.JComboBox<Produto> jComboBox1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JSpinner jSpinner1;
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;

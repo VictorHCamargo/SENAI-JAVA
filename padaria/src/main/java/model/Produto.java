@@ -19,6 +19,11 @@ public class Produto {
         this.Descricao = Descricao;
     }
 
+    @Override
+    public String toString() {
+        return Descricao;
+    }
+    
     public int getCodigo() {
         return Codigo;
     }
