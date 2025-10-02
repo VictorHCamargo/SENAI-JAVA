@@ -13,15 +13,10 @@ public class Produto {
     private int Codigo;
     private double Preco;
     private String Descricao;
-    public Produto(int Codigo, double Preco, String Descricao) {
-        this.Codigo = Codigo;
-        this.Preco = Preco;
-        this.Descricao = Descricao;
-    }
 
     @Override
     public String toString() {
-        return Descricao;
+        return Codigo+"-"+Descricao;
     }
     
     public int getCodigo() {

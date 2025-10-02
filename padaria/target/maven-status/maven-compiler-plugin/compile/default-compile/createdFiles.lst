@@ -1,6 +1,8 @@
-edu\victorhcamargo\padaria\Interface\Principal$2.class
 edu\victorhcamargo\padaria\Interface\Principal.class
-edu\victorhcamargo\padaria\Padaria.class
 edu\victorhcamargo\padaria\Interface\Principal$1.class
 edu\victorhcamargo\padaria\Interface\Principal$3.class
+edu\victorhcamargo\padaria\produtoenum\ProdutoEnum.class
 model\Produto.class
+edu\victorhcamargo\padaria\Interface\Principal$2.class
+edu\victorhcamargo\padaria\Padaria.class
+edu\victorhcamargo\padaria\produtoservice\ProdutoService.class
