@@ -4,7 +4,10 @@
  */
 package edu.victorhcamargo.padaria.Interface;
 
+import edu.victorhcamargo.padaria.produtoVenda.ProdutoVenda;
+import edu.victorhcamargo.padaria.produtoenum.ProdutoEnum;
 import edu.victorhcamargo.padaria.produtoservice.ProdutoService;
+import java.util.HashSet;
 import java.util.List;
 import javax.swing.DefaultListModel;
 import javax.swing.JTextArea;
@@ -18,9 +21,9 @@ public class Principal extends javax.swing.JFrame {
     
     private static final java.util.logging.Logger logger = java.util.logging.Logger.getLogger(Principal.class.getName());
     List<Produto> produtos;
-    DefaultListModel<Produto> listaCarrinho1;
-    DefaultListModel<Produto> listaCarrinho2;
-    DefaultListModel<Produto> listaCarrinho3;
+    DefaultListModel<ProdutoVenda> listaCarrinho1;
+    DefaultListModel<ProdutoVenda> listaCarrinho2;
+    DefaultListModel<ProdutoVenda> listaCarrinho3;
     /**
      * Creates new form Principal
      */
@@ -82,10 +85,12 @@ public class Principal extends javax.swing.JFrame {
         jList2 = new javax.swing.JList<>();
         jScrollPane6 = new javax.swing.JScrollPane();
         jList3 = new javax.swing.JList<>();
+        bRemove = new javax.swing.JButton();
+        jTextField1 = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jButton2.setText("jButton2");
+        jButton2.setText("Adiciona");
         jButton2.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton2ActionPerformed(evt);
@@ -96,7 +101,7 @@ public class Principal extends javax.swing.JFrame {
         jTextArea1.setRows(5);
         jScrollPane1.setViewportView(jTextArea1);
 
-        jButton3.setText("jButton2");
+        jButton3.setText("Adiciona");
         jButton3.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton3ActionPerformed(evt);
@@ -111,7 +116,7 @@ public class Principal extends javax.swing.JFrame {
         jTextArea3.setRows(5);
         jScrollPane3.setViewportView(jTextArea3);
 
-        jButton4.setText("jButton2");
+        jButton4.setText("Adiciona");
         jButton4.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jButton4ActionPerformed(evt);
@@ -120,17 +125,19 @@ public class Principal extends javax.swing.JFrame {
 
         jSpinner1.setModel(new javax.swing.SpinnerNumberModel(1, 1, 10, 1));
 
-        jList1.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jList1MouseClicked(evt);
-            }
-        });
         jScrollPane4.setViewportView(jList1);
 
         jList2.setToolTipText("");
         jScrollPane5.setViewportView(jList2);
 
         jScrollPane6.setViewportView(jList3);
+
+        bRemove.setText("Remove");
+        bRemove.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                bRemoveActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -157,11 +164,18 @@ public class Principal extends javax.swing.JFrame {
                                         .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, 200, javax.swing.GroupLayout.PREFERRED_SIZE)))))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(49, 49, 49)
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(8, 8, 8)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 372, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                .addComponent(bRemove))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(49, 49, 49)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 238, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                         .addGap(144, 144, 144)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -176,7 +190,14 @@ public class Principal extends javax.swing.JFrame {
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jSpinner1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(141, 141, 141)
+                        .addComponent(bRemove))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(73, 73, 73)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 225, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 67, Short.MAX_VALUE)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
@@ -212,13 +233,28 @@ public class Principal extends javax.swing.JFrame {
         areaDestino.append(" = " + total);
         areaDestino.append("\n");
         if (areaDestino == jTextArea1){
-            listaCarrinho1.addElement((Produto)jComboBox1.getSelectedItem());
+            ProdutoVenda produtoVendido = new ProdutoVenda();
+            produtoVendido.setProduto((Produto)jComboBox1.getSelectedItem());
+            produtoVendido.setQuantidade(Integer.parseInt(jSpinner1.getValue().toString()));
+            produtoVendido.setTotal();
+            listaCarrinho1.addElement(produtoVendido);
+            
+            
         } else if (areaDestino == jTextArea2){
-            listaCarrinho2.addElement((Produto)jComboBox1.getSelectedItem());
+            ProdutoVenda produtoVendido = new ProdutoVenda();
+            produtoVendido.setProduto((Produto)jComboBox1.getSelectedItem());
+            produtoVendido.setQuantidade(Integer.parseInt(jSpinner1.getValue().toString()));
+            produtoVendido.setTotal();
+            listaCarrinho2.addElement(produtoVendido);
         } else if (areaDestino == jTextArea3){
-            listaCarrinho3.addElement((Produto)jComboBox1.getSelectedItem());
+            ProdutoVenda produtoVendido = new ProdutoVenda();
+            produtoVendido.setProduto((Produto)jComboBox1.getSelectedItem());
+            produtoVendido.setQuantidade(Integer.parseInt(jSpinner1.getValue().toString()));
+            produtoVendido.setTotal();
+            listaCarrinho3.addElement(produtoVendido);
         }
     }
+
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
         // TODO add your handling code here:
         
@@ -236,10 +272,21 @@ public class Principal extends javax.swing.JFrame {
         fazerCompra(jTextArea3);
     }//GEN-LAST:event_jButton4ActionPerformed
 
-    private void jList1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jList1MouseClicked
+    private void bRemoveActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_bRemoveActionPerformed
         // TODO add your handling code here:
-        listaCarrinho1.se
-    }//GEN-LAST:event_jList1MouseClicked
+        if (jList1.getSelectedIndex() >=0 && jList2.getSelectedIndex() >=0 && jList3.getSelectedIndex() >=0) {
+            listaCarrinho1.removeElementAt(
+                jList1.getSelectedIndex()
+            );
+            listaCarrinho2.removeElementAt(
+                jList2.getSelectedIndex()
+            );
+            listaCarrinho3.removeElementAt(
+                jList3.getSelectedIndex()
+            );
+        }
+            
+    }//GEN-LAST:event_bRemoveActionPerformed
 
     /**
      * @param args the command line arguments
@@ -267,13 +314,14 @@ public class Principal extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton bRemove;
     private javax.swing.JButton jButton2;
     private javax.swing.JButton jButton3;
     private javax.swing.JButton jButton4;
     private javax.swing.JComboBox<Produto> jComboBox1;
-    private javax.swing.JList<Produto> jList1;
-    private javax.swing.JList<Produto> jList2;
-    private javax.swing.JList<Produto> jList3;
+    private javax.swing.JList<ProdutoVenda> jList1;
+    private javax.swing.JList<ProdutoVenda> jList2;
+    private javax.swing.JList<ProdutoVenda> jList3;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane2;
     private javax.swing.JScrollPane jScrollPane3;
@@ -284,5 +332,6 @@ public class Principal extends javax.swing.JFrame {
     private javax.swing.JTextArea jTextArea1;
     private javax.swing.JTextArea jTextArea2;
     private javax.swing.JTextArea jTextArea3;
+    private javax.swing.JTextField jTextField1;
     // End of variables declaration//GEN-END:variables
 }

@@ -5,4 +5,6 @@ edu\victorhcamargo\padaria\produtoenum\ProdutoEnum.class
 model\Produto.class
 edu\victorhcamargo\padaria\Interface\Principal$2.class
 edu\victorhcamargo\padaria\Padaria.class
+edu\victorhcamargo\padaria\produtoVenda\ProdutoVenda.class
+edu\victorhcamargo\padaria\Interface\Principal$4.class
 edu\victorhcamargo\padaria\produtoservice\ProdutoService.class
