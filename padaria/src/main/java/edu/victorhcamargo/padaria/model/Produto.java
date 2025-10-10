@@ -1,4 +1,4 @@
-package model;
+package edu.victorhcamargo.padaria.model;
 
 /*
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
@@ -12,11 +12,20 @@ package model;
 public class Produto {
     private int Codigo;
     private double Preco;
+    private int saldoEstoque;
     private String Descricao;
 
     @Override
     public String toString() {
         return Codigo+"-"+Descricao;
+    }
+
+    public int getSaldoEstoque() {
+        return saldoEstoque;
+    }
+
+    public void setSaldoEstoque(int saldoEstoque) {
+        this.saldoEstoque = saldoEstoque;
     }
     
     public int getCodigo() {
