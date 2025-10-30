@@ -10,8 +10,8 @@ import edu.victorhcamargo.simuladorrpg.Interface.Monstro;
 import edu.victorhcamargo.simuladorrpg.service.EquipamentoService;
 import edu.victorhcamargo.simuladorrpg.service.MonstroService;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Random;
+import javax.swing.DefaultListModel;
 
 /**
  *
@@ -28,33 +28,23 @@ public class SimuladorRPG extends javax.swing.JFrame {
     public Jogador jogador;
     public ArrayList<Equipamento> equipamentos;
     public ArrayList<Monstro> monstros;
+    public DefaultListModel<Equipamento> inventarioModelo;
+    public Monstro m;
+    public Random r;
+    int contador;
     public SimuladorRPG() {
         initComponents();
-        Random r = new Random();
+        r = new Random();
+        inventarioModelo = new DefaultListModel<>();
         jogador = new Jogador();
         equipamentos = (ArrayList<Equipamento>) EquipamentoService.ObterEquipamentos();
         monstros =  (ArrayList<Monstro>) MonstroService.ObterMonstros();
-        Monstro monstroDaVez = monstros.get(r.nextInt(0, monstros.size()));
-        Monstro monstroDaVez1 = monstros.get(r.nextInt(0, monstros.size()));
         jogador.setNome("Victor Tenebroso");
         jogador.setNivel(5);
-        jogador.setInventario(equipamentos, "Bandana da Força Bruta (e Pouca Inteligência)", "Armadura de Couro Falso", "Sandálias da Fuga Apavorada", "Escudo de Papelão Reforçado com Fita Adesiva", "Joelheiras da Sedução");
-        
-        int forcaJogador = jogador.getNivel() + jogador.getCabeca().getBonus() + jogador.getArmadura().getBonus() + jogador.getCalcado().getBonus()+ jogador.getItem_geral().getBonus() + jogador.getMao().getBonus();
-        
-        System.out.println("Você (Nível " + jogador.getNivel() + ") chuta a porta!");
-        System.out.println("Aparece dois monstros sendo eles ");
-        System.out.println("Um " + monstroDaVez.getNome() + " de Nível " + monstroDaVez.getNivel() + "!");
-        System.out.println("Um " + monstroDaVez1.getNome() + " de Nível " + monstroDaVez1.getNivel() + "!");
-        System.out.println("Sua força de combate total é: " + forcaJogador);
-        System.out.println("A força dos monstros é: " + (monstroDaVez.getNivel()+ monstroDaVez1.getNivel()));
-        
-        if (forcaJogador > (monstroDaVez.getNivel()+ monstroDaVez1.getNivel())) {
-            System.out.println("\nVITÓRIA! Você derrotou os monstros e pegou o tesouro!");
-        } else {
-            System.out.println("\nDERROTA! Você precisa fugir para não sofrer coisas ruins!");
-        }
-    }
+        jogadorAtual.setText(jogador.toString());
+        inventarioModelo.addElement(equipamentos.get(r.nextInt(0,equipamentos.size())));
+        inventario.setModel(inventarioModelo);
+   }
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -65,22 +55,200 @@ public class SimuladorRPG extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        equipar = new javax.swing.JButton();
+        jScrollPane1 = new javax.swing.JScrollPane();
+        visor = new javax.swing.JTextArea();
+        fugir = new javax.swing.JButton();
+        atacar = new javax.swing.JButton();
+        jScrollPane3 = new javax.swing.JScrollPane();
+        inventario = new javax.swing.JList<>();
+        jScrollPane2 = new javax.swing.JScrollPane();
+        equipamentosEquipados = new javax.swing.JTextArea();
+        jogadorAtual = new javax.swing.JTextField();
+        abrirPorta = new javax.swing.JButton();
+
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        equipar.setText("equipar");
+        equipar.setToolTipText("");
+        equipar.setActionCommand("equipar");
+        equipar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                equiparActionPerformed(evt);
+            }
+        });
+
+        visor.setColumns(20);
+        visor.setRows(5);
+        jScrollPane1.setViewportView(visor);
+
+        fugir.setText("fugir");
+        fugir.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                fugirActionPerformed(evt);
+            }
+        });
+
+        atacar.setText("atacar");
+        atacar.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                atacarActionPerformed(evt);
+            }
+        });
+
+        jScrollPane3.setViewportView(inventario);
+
+        equipamentosEquipados.setColumns(20);
+        equipamentosEquipados.setRows(5);
+        equipamentosEquipados.setText("Equipamentos: \n-Cabeça: ----\n-Armadura: ----\n-Calçado: ----\n-Mãos: ----\n-Item_geral: ----");
+        jScrollPane2.setViewportView(equipamentosEquipados);
+
+        abrirPorta.setText("abrir Porta");
+        abrirPorta.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                abrirPortaActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 400, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addGap(60, 60, 60)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane3, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 342, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                .addComponent(fugir, javax.swing.GroupLayout.Alignment.TRAILING)
+                                .addComponent(jScrollPane1, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 382, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(90, 90, 90)
+                                .addComponent(abrirPorta, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(100, 100, 100)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(equipar)
+                            .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 403, Short.MAX_VALUE)
+                            .addComponent(jogadorAtual))))
+                .addGap(48, 48, 48))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(layout.createSequentialGroup()
+                    .addGap(61, 61, 61)
+                    .addComponent(atacar)
+                    .addContainerGap(856, Short.MAX_VALUE)))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 300, Short.MAX_VALUE)
+            .addGroup(layout.createSequentialGroup()
+                .addContainerGap()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jogadorAtual, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(abrirPorta))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 205, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 29, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(fugir)
+                    .addComponent(equipar))
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 185, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(38, 38, 38))
+            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                    .addContainerGap(274, Short.MAX_VALUE)
+                    .addComponent(atacar)
+                    .addGap(234, 234, 234)))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void equiparActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_equiparActionPerformed
+        Equipamento selecionado = inventario.getSelectedValue();
+        switch (selecionado.getTipo()) {
+            case CABECAL -> jogador.setCabeca(selecionado);
+            case ARMADURA -> jogador.setArmadura(selecionado);
+            case CALCADO -> jogador.setCalcado(selecionado);
+            case MAO -> jogador.setMao(selecionado);
+            case ITEM_GERAL -> jogador.setItem_geral(selecionado);
+        }
+        atualizarInfoJogador();
+    }//GEN-LAST:event_equiparActionPerformed
+
+    private void atacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atacarActionPerformed
+        r = new Random();
+        contador--;
+        if (jogador.getPoder() > m.getNivel()) {
+            jogador.setNivel(jogador.getNivel()+1);
+            Equipamento e =equipamentos.get(r.nextInt(0,equipamentos.size()));
+            for(int i = 0; i<inventarioModelo.getSize();i++){
+                if(e.getNome()==(inventarioModelo.get(i).getNome())){
+                    visor.append("Você ganhou um tesouro repetido, se ferrou vacilao kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+                } else {
+                    inventarioModelo.addElement(e);
+                }
+            }
+            visor.setText("\nVITÓRIA! Você derrotou os monstros e pegou o tesouro!");
+            atualizarInfoJogador();
+        } else {
+            visor.setText("\nDERROTA! Você precisa fugir para não sofrer coisas ruins!");
+            penalizar();
+            atualizarInfoJogador();
+        }
+    }//GEN-LAST:event_atacarActionPerformed
+
+    private void fugirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fugirActionPerformed
+        visor.setText("\nVocê tenta fugir");
+        contador--;
+        r = new Random();
+        for (int i = 1; i <4;i++){
+            visor.append("\nVocê está tentando fugir..."+i);
+        }
+        if(r.nextInt(0,1+1)== 1) {
+            visor.append("\nVocê conseguiu fugir!!");
+        } else {
+            visor.append("\nVocê infelizmente foi pego!!");
+            penalizar();
+        }
+    }//GEN-LAST:event_fugirActionPerformed
+
+    private void abrirPortaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirPortaActionPerformed
+        r = new Random();
+        if(contador == 0) {
+            m = monstros.get(r.nextInt(0,monstros.size()));
+            visor.setText("Você (Nível " + jogador.getNivel() + ") chuta a porta!");
+            visor.append("\nAparece dois monstros sendo eles ");
+            visor.append("\nUm " + m.getNome() + " de Nível " + m.getNivel() + "!");
+            visor.append("\nSua força de combate total é: " + jogador.getPoder());
+            visor.append("\nA força dos monstros é: " + m.getNivel());
+            visor.append("\nO que você escolhe lutar ou fugir?");
+            contador++;
+        } else {
+            visor.append("\nA porta já foi aberta");
+        }
+        
+    }//GEN-LAST:event_abrirPortaActionPerformed
+
+    private void atualizarInfoJogador() {
+        jogadorAtual.setText(jogador.toString());
+        equipamentosEquipados.setText("");
+        equipamentosEquipados.append("Equipados:");
+        equipamentosEquipados.append("\n-Cabeça: "+ jogador.getCabeca());
+        equipamentosEquipados.append("\n-Armadura: "+ jogador.getArmadura());
+        equipamentosEquipados.append("\n-Calçado: "+ jogador.getCalcado());
+        equipamentosEquipados.append("\n-Mão: "+ jogador.getMao());
+        equipamentosEquipados.append("\n-Item_geral: "+ jogador.getItem_geral());
+    }
+    private void penalizar(){
+        jogador.setNivel(1);
+        inventario.removeAll();
+        jogador.removerInventario();
+        inventarioModelo.addElement(equipamentos.get(r.nextInt(0,equipamentos.size())));
+        atualizarInfoJogador();
+    }
     /**
      * @param args the command line arguments
      */
@@ -107,5 +275,16 @@ public class SimuladorRPG extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton abrirPorta;
+    private javax.swing.JButton atacar;
+    private javax.swing.JTextArea equipamentosEquipados;
+    private javax.swing.JButton equipar;
+    private javax.swing.JButton fugir;
+    private javax.swing.JList<Equipamento> inventario;
+    private javax.swing.JScrollPane jScrollPane1;
+    private javax.swing.JScrollPane jScrollPane2;
+    private javax.swing.JScrollPane jScrollPane3;
+    private javax.swing.JTextField jogadorAtual;
+    private javax.swing.JTextArea visor;
     // End of variables declaration//GEN-END:variables
 }

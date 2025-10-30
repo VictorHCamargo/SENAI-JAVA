@@ -39,6 +39,12 @@ public class Equipamento {
         this.tipo = tipo;
     }
 
+    @Override
+    public String toString() {
+        return nome + " + " + bonus;
+    }
+    
+    
     
 
     

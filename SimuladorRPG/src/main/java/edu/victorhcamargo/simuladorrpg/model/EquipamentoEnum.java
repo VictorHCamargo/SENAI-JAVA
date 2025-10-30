@@ -15,7 +15,6 @@ public enum EquipamentoEnum {
     CAMISETA_DA_BANDA_DE_BARDO("Camiseta da Banda de Bardo", 1, TipoEquipamento.ARMADURA),
     COTA_DE_MALHA_ELETRIFICADA("Cota de Malha Eletrificada (Dá choque em você)", 3, TipoEquipamento.ARMADURA),
     ARMADURA_DE_PLOT_CONVENIENTE("Armadura de Plot Conveniente", 4, TipoEquipamento.ARMADURA),
-    
     // Calçados
     BOTAS_DO_CHUTE_NA_PORTA("Botas do Chute na Porta", 1, TipoEquipamento.CALCADO),
     SANDALIAS_DA_FUGA_APAVORADA("Sandálias da Fuga Apavorada", 2, TipoEquipamento.CALCADO),

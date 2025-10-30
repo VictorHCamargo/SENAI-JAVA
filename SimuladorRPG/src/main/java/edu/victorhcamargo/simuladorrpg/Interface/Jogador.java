@@ -20,6 +20,9 @@ public class Jogador {
     private Equipamento mao;
     private Equipamento item_geral;
     private List<Equipamento> inventario;
+    private int poder;
+
+    
 
     public String getNome() {
         return nome;
@@ -41,7 +44,7 @@ public class Jogador {
         return cabeca;
     }
 
-    private boolean setCabeca(Equipamento cabeca) {
+    public boolean setCabeca(Equipamento cabeca) {
         if(cabeca.getTipo()== TipoEquipamento.CABECAL) {
             this.cabeca = cabeca;
             return true;
@@ -52,7 +55,7 @@ public class Jogador {
         return armadura;
     }
 
-    private boolean setArmadura(Equipamento armadura) {
+    public boolean setArmadura(Equipamento armadura) {
         if(armadura.getTipo()== TipoEquipamento.ARMADURA) {
             this.armadura = armadura;
             return true;
@@ -63,7 +66,7 @@ public class Jogador {
         return calcado;
     }
 
-    private boolean setCalcado(Equipamento calcado) {
+    public boolean setCalcado(Equipamento calcado) {
         if(calcado.getTipo()== TipoEquipamento.CALCADO) {
             this.calcado = calcado;
             return true;
@@ -74,7 +77,7 @@ public class Jogador {
         return mao;
     }
 
-    private boolean setMao(Equipamento mao) {
+    public boolean setMao(Equipamento mao) {
         if(mao.getTipo()== TipoEquipamento.MAO) {
             this.mao = mao;
             return true;
@@ -85,37 +88,42 @@ public class Jogador {
         return item_geral;
     }
 
-    private boolean setItem_geral(Equipamento item_geral) {
+    public boolean setItem_geral(Equipamento item_geral) {
         if(item_geral.getTipo()== TipoEquipamento.ITEM_GERAL) {
             this.item_geral = item_geral;
             return true;
         } else {return false;}
     }
-
-    public List<Equipamento> getInventario() {
-        return inventario;
-    }
-
-    public void setInventario(List<Equipamento> inventario, String nome_cabeca, String nome_armadura, String nome_calcado, String nome_mao, String nome_item) {
-        for (Equipamento item : inventario) {
-            if(item.getNome().equals(nome_cabeca)){
-                this.setCabeca(item);
-            }       
-            if(item.getNome().equals(nome_armadura)){
-                this.setArmadura(item);
-            }
-            if(item.getNome().equals(nome_mao)){
-                this.setMao(item);
-            }
-            if(item.getNome().equals(nome_calcado)){
-               this.setCalcado(item) ;
-            }
-            if(item.getNome().equals(nome_item)){
-               this.setItem_geral(item);
-            }
-        }
-    }
-
     
+    public int getPoder() {
+        this.poder = this.getNivel();
+        if(cabeca != null) {
+            poder += cabeca.getBonus();
+        }
+        if(armadura != null) {
+            poder += armadura.getBonus();
+        }
+        if(calcado != null) {
+            poder += calcado.getBonus();
+        }
+        if(item_geral != null) {
+            poder += item_geral.getBonus();
+        }
+        if(mao != null) {
+            poder += mao.getBonus();
+        }
+        return poder;
+    }
+    public void removerInventario() {
+        cabeca = null;
+        armadura = null;
+        calcado = null;
+        mao = null;
+        item_geral = null;
+    }
+    @Override
+    public String toString() {
+        return "Jogador: " + nome + ", nivel = " + nivel;
+    }
     
 }
