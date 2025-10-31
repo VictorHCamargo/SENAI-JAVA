@@ -12,6 +12,7 @@ import edu.victorhcamargo.simuladorrpg.service.MonstroService;
 import java.util.ArrayList;
 import java.util.Random;
 import javax.swing.DefaultListModel;
+import javax.swing.JOptionPane;
 
 /**
  *
@@ -34,6 +35,10 @@ public class SimuladorRPG extends javax.swing.JFrame {
     int contador;
     public SimuladorRPG() {
         initComponents();
+        
+        
+        
+        
         r = new Random();
         inventarioModelo = new DefaultListModel<>();
         jogador = new Jogador();
@@ -181,38 +186,57 @@ public class SimuladorRPG extends javax.swing.JFrame {
     private void atacarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_atacarActionPerformed
         r = new Random();
         contador--;
-        if (jogador.getPoder() > m.getNivel()) {
-            jogador.setNivel(jogador.getNivel()+1);
-            Equipamento e =equipamentos.get(r.nextInt(0,equipamentos.size()));
-            for(int i = 0; i<inventarioModelo.getSize();i++){
-                if(e.getNome()==(inventarioModelo.get(i).getNome())){
-                    visor.append("Você ganhou um tesouro repetido, se ferrou vacilao kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
-                } else {
-                    inventarioModelo.addElement(e);
+        try {
+            if (jogador.getPoder() > m.getNivel()) {
+                jogador.setNivel(jogador.getNivel()+1);
+                Equipamento e =equipamentos.get(r.nextInt(0,equipamentos.size()));
+                for(int i = 0; i<inventarioModelo.getSize();i++){
+                    if(e.getNome()==(inventarioModelo.get(i).getNome())){
+                        visor.append("Você ganhou um tesouro repetido, se ferrou vacilao kkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
+                    } else {
+                        inventarioModelo.addElement(e);
+                    }
                 }
+                visor.setText("\nVITÓRIA! Você derrotou os monstros e pegou o tesouro!");
+                atualizarInfoJogador();
+            } else {
+                visor.setText("\nDERROTA! Você precisa fugir para não sofrer coisas ruins!");
+                penalizar();
+                atualizarInfoJogador();
             }
-            visor.setText("\nVITÓRIA! Você derrotou os monstros e pegou o tesouro!");
-            atualizarInfoJogador();
-        } else {
-            visor.setText("\nDERROTA! Você precisa fugir para não sofrer coisas ruins!");
-            penalizar();
-            atualizarInfoJogador();
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Não há nenhum monstro para ser atacado, por favor abrá a porta!",
+                    "ERROR NO OPEN DOOR",JOptionPane.ERROR_MESSAGE);
         }
+        
     }//GEN-LAST:event_atacarActionPerformed
 
     private void fugirActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_fugirActionPerformed
-        visor.setText("\nVocê tenta fugir");
-        contador--;
-        r = new Random();
-        for (int i = 1; i <4;i++){
-            visor.append("\nVocê está tentando fugir..."+i);
+        try {
+            if(m != null) {
+                visor.setText("\nVocê tenta fugir");
+                contador--;
+                r = new Random();
+                for (int i = 1; i <4;i++){
+                    visor.append("\nVocê está tentando fugir..."+i);
+                }
+                if(r.nextInt(0,1+1)== 1) {
+                    visor.append("\nVocê conseguiu fugir!!");
+                } else {
+                    visor.append("\nVocê infelizmente foi pego!!");
+                    penalizar();
+                } 
+            } else {
+                m.getNome();
+            }
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null,
+                    "Você nem entrou na dungeon, abrá a porta e enfrente seus medos!",
+                    "ERROR NO OPEN DOOR",JOptionPane.ERROR_MESSAGE);
         }
-        if(r.nextInt(0,1+1)== 1) {
-            visor.append("\nVocê conseguiu fugir!!");
-        } else {
-            visor.append("\nVocê infelizmente foi pego!!");
-            penalizar();
-        }
+        
+        
     }//GEN-LAST:event_fugirActionPerformed
 
     private void abrirPortaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_abrirPortaActionPerformed
