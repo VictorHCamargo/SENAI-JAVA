@@ -33,7 +33,7 @@ public class Main extends ApplicationAdapter {
 
     Array<Sprite> dropSprites;
 
-    float dropTime;
+    float dropTimer;
 
     Rectangle bucketRectangle;
     Rectangle dropRectangle;
@@ -51,83 +51,85 @@ public class Main extends ApplicationAdapter {
 
         bucketSprite = new Sprite(bucketTexture);
         bucketSprite.setSize(1,1);
+        bucketSprite.setPosition(
+            (viewport.getWorldWidth() - bucketSprite.getWidth()) / 2f,
+            0f
+        );
 
         touchPos = new Vector2();
-
         dropSprites = new Array<>();
 
+        bucketRectangle = new Rectangle();
+        dropRectangle = new Rectangle();
+
+        music.setLooping(true);
+        music.setVolume(.5f);
+        music.play();
+
     }
+
     @Override
     public void resize(int width, int height) {
-        viewport.update(width,height, true);
-
+        viewport.update(width,height,true);
     }
-
     @Override
     public void render() {
+        //ScreenUtils.clear(0.15f, 0.15f, 0.2f, 1f);
+        //batch.begin();
+        //batch.draw(image, 140, 210);
+        //batch.end();
         input();
         logic();
         draw();
     }
 
-
     private void input() {
         float speed = 4f;
         float delta = Gdx.graphics.getDeltaTime();
-        if (Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
+        if(Gdx.input.isKeyPressed(Input.Keys.RIGHT)){
             bucketSprite.translateX(speed * delta);
-        }
-        if (Gdx.input.isKeyPressed(Input.Keys.LEFT)){
+        } else   if(Gdx.input.isKeyPressed(Input.Keys.LEFT)) {
             bucketSprite.translateX(-speed * delta);
         }
 
-        if (Gdx.input.isTouched()) {
+        if (Gdx.input.isTouched()){
             touchPos.set(Gdx.input.getX(),Gdx.input.getY());
             viewport.unproject(touchPos);
-            bucketSprite.setCenterX(touchPos.x);
+            bucketSprite.setCenterX((touchPos.x));
         }
     }
-    private void createDroplet() {
-        float dropWidth = 1;
-        float dropHeight =1;
-        float worldWidth =viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
 
-        Sprite dropSprite = new Sprite(dropTexture);
-        dropSprite.setSize(dropWidth,dropHeight);
-        dropSprite.setX(MathUtils.random(0f,worldWidth - dropWidth));
-        dropSprite.setY(worldHeight);
-        dropSprites.add(dropSprite);
-    }
     private void logic() {
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
+
         float bucketWidth = bucketSprite.getWidth();
         float bucketHeight = bucketSprite.getHeight();
-        float delta = Gdx.graphics.getDeltaTime();
-
 
         bucketSprite.setX(MathUtils.clamp(bucketSprite.getX(),0,worldWidth - bucketWidth));
-        bucketRectangle.set(bucketSprite.getX(),bucketRectangle.getY(),bucketWidth,bucketHeight);
+
+        float delta = Gdx.graphics.getDeltaTime();
+
+        bucketRectangle.set(bucketSprite.getX(),
+            bucketSprite.getY(),
+            bucketWidth,
+            bucketHeight);
         for (int i = dropSprites.size - 1; i >= 0; i--) {
             Sprite dropSprite = dropSprites.get(i);
-
             float dropWidth = dropSprite.getWidth();
             float dropHeight = dropSprite.getHeight();
 
-            dropSprite.translateY(-2f*delta);
-
+            dropSprite.translateY((-2f * delta));
             dropRectangle.set(dropSprite.getX(),dropSprite.getY(),dropWidth,dropHeight);
-
             if(dropSprite.getY() < -dropHeight) dropSprites.removeIndex(i);
-
-            if (bucketRectangle.overlaps(dropRectangle)) {
+            else if(bucketRectangle.overlaps(dropRectangle)){
                 dropSprites.removeIndex(i);
+                dropSound.play();
             }
         }
-        dropTime += delta;
-        if(dropTime > 1f) {
-            dropTime = 0;
+        dropTimer += delta;
+        if(dropTimer > 1f) {
+            dropTimer = 0;
             createDroplet();
         }
     }
@@ -137,21 +139,31 @@ public class Main extends ApplicationAdapter {
         viewport.apply();
         spriteBatch.setProjectionMatrix(viewport.getCamera().combined);
         spriteBatch.begin();
+
         float worldWidth = viewport.getWorldWidth();
-        float worldHeight = viewport.getWorldHeight();
+        float wordHeight = viewport.getWorldHeight();
 
-
-        spriteBatch.draw(backgroundTexture,0,0,worldWidth,worldHeight);
+        spriteBatch.draw(backgroundTexture,0,0,worldWidth,wordHeight);
         bucketSprite.draw(spriteBatch);
 
         for (Sprite dropSprite : dropSprites) {
             dropSprite.draw(spriteBatch);
         }
-        // spriteBatch.draw(bucketTexture,0,0,1,1);
-
-
         spriteBatch.end();
 
     }
 
+    private void createDroplet() {
+        float dropWidth = 1;
+        float dropHeight = 1;
+        float worldWidth = viewport.getWorldWidth();
+        float worldHeight = viewport.getWorldHeight();
+
+        Sprite dropSprite = new Sprite(dropTexture);
+        dropSprite.setSize(dropWidth,dropHeight);
+        dropSprite.setX(MathUtils.random(0f, worldWidth - dropWidth));
+
+        dropSprite.setY(worldHeight);
+        dropSprites.add(dropSprite);
+    }
 }
