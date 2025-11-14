@@ -5,7 +5,7 @@ import com.badlogic.gdx.utils.Array;
 
 
 public enum MapaEnum {
-    PLANICIE_ALVORADA_1("Planicie Alvorada Nível 1",new Array<>(
+    PLANICIE_ALVORADA_1("Planicie Alvorada",new Array<>(
         new Vector2[]{new Vector2(1, 0),
             new Vector2(2, 1),
             new Vector2(3, 2),
@@ -28,9 +28,9 @@ public enum MapaEnum {
             new Vector2(13, 16),
             new Vector2(12, 17),
             new Vector2(11, 18)
-        })),
+        }),1),
     PLANICIE_ALVORADA_2(
-        "Planície Alvorada Nível 2 (Médio)",
+        "Planicie Alvorada",
         new Array<>(new Vector2[]{
             new Vector2(15, 0),
             new Vector2(14, 1),
@@ -48,10 +48,10 @@ public enum MapaEnum {
             new Vector2(12, 15),
             new Vector2(13, 17),
             new Vector2(14, 18)
-        })
+        }),2
     ),
     PLANICIE_ALVORADA_3(
-        "Planície Alvorada Nível 3 (Difícil)",
+        "Planicie Alvorada",
         new Array<>(new Vector2[]{
             new Vector2(0, 18),
             new Vector2(2, 16),
@@ -60,14 +60,16 @@ public enum MapaEnum {
             new Vector2(9, 7),
             new Vector2(12, 4),
             new Vector2(15, 0)
-        })
+        }),3
     );
 
     private String nomeMapa;
     private Array<Vector2> caminhoMapa;
-    MapaEnum(String nome, Array<Vector2> caminho) {
+    private int dificuldadeMapa;
+    MapaEnum(String nome, Array<Vector2> caminho, int dificuldade) {
         this.nomeMapa = nome;
         this.caminhoMapa = caminho;
+        this.dificuldadeMapa = dificuldade;
     }
 
     public String getNomeMapa() {
@@ -77,4 +79,5 @@ public enum MapaEnum {
     public Array<Vector2> getCaminhoMapa() {
         return caminhoMapa;
     }
+    public int getDificuldadeMapa() {return dificuldadeMapa;}
 }

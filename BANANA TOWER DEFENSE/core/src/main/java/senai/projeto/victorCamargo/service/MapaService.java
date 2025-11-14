@@ -13,6 +13,7 @@ public class MapaService {
             Mapa m = new Mapa();
             m.setNome(item.getNomeMapa());
             m.setCaminho(item.getCaminhoMapa());
+            m.setDifficult(item.getDificuldadeMapa());
             mapas.add(m);
         }
         return mapas;

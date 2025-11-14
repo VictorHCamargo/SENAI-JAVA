@@ -6,6 +6,7 @@ import com.badlogic.gdx.utils.Array;
 public class Mapa {
     private String nome;
     private Array<Vector2> caminho;
+    private int difficult;
 
     public Array<Vector2> getCaminho() {
         return caminho;
@@ -21,5 +22,13 @@ public class Mapa {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public int getDifficult() {
+        return difficult;
+    }
+
+    public void setDifficult(int difficult) {
+        this.difficult = difficult;
     }
 }
