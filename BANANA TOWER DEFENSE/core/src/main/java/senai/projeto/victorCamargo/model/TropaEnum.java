@@ -3,8 +3,8 @@ package senai.projeto.victorCamargo.model;
 import com.badlogic.gdx.graphics.Texture;
 
 public enum TropaEnum {
-    TERRORISTA(new Texture("terrorista.png"),"Terrorista",30,6,1),
-    CONTRATERRORISTA(new Texture("contraterrorista.png"),"ContraTerrorista",10,8,1);
+    TERRORISTA(new Texture("terrorista.png"),"Terrorista",30,4,1),
+    CONTRATERRORISTA(new Texture("contraterrorista.png"),"ContraTerrorista",10,6,1);
 
     private Texture texturaTropa;
     private String nomeTropa;
