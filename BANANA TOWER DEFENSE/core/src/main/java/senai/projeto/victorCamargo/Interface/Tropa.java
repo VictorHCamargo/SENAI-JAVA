@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Tropa {
+
     private Sprite tropa;
     private Texture textura;
     private String nome;
@@ -48,7 +49,7 @@ public class Tropa {
     }
 
     public void setDano(float dano) {
-        this.dano = (float) (dano * ( this.nivel+0.12));
+        this.dano = dano;
     }
 
     public float getAlcance() {
@@ -56,7 +57,7 @@ public class Tropa {
     }
 
     public void setAlcance(float alcance) {
-        this.alcance = (float) (alcance * (this.nivel+0.06));
+        this.alcance = alcance;
     }
 
     public int getNivel() {

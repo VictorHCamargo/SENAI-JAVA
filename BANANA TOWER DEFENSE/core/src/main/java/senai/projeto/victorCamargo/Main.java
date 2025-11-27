@@ -17,10 +17,12 @@ import senai.projeto.victorCamargo.service.MapaService;
 import senai.projeto.victorCamargo.service.TropaService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-
-/** {@link com.badlogic.gdx.ApplicationListener} implementation shared by all platforms. */
+/**
+ * Main reescrito: seleção por primeiro clique, posicionamento por segundo clique.
+ * - tropa segue o mouse enquanto selecionada
+ * - verificação de colisões (way, menu) e limites do mundo antes de posicionar
+ */
 public class Main extends ApplicationAdapter {
     Texture backgroundTexture;
     Texture wayTexture;
@@ -43,6 +45,12 @@ public class Main extends ApplicationAdapter {
     Array<Rectangle> wayHitBoxes;
     Array<Rectangle> menuHitBoxes;
 
+    int statusGame; // 1 - jogo normal / 2 - posicionamento (mantido para compatibilidade)
+
+    // Novas variáveis de seleção/posicionamento
+    Tropa tropaSelecionada = null;
+    boolean aguardandoPosicionamento = false;
+
     @Override
     public void create() {
         rangeTexture = new Texture("range.png");
@@ -50,7 +58,7 @@ public class Main extends ApplicationAdapter {
         backgroundTexture = new Texture("background.png");
         backgroundTextureMenu = new Texture("background_menu_troops.png");
 
-        viewport = new FitViewport(18,15);
+        viewport = new FitViewport(60, 45);
 
         telaJog = new SpriteBatch();
         waySprites = new Array<>();
@@ -60,175 +68,301 @@ public class Main extends ApplicationAdapter {
 
         clickpos = new Vector2();
 
+        // Carrega tropas e mapas via services (presume que retornam listas não nulas)
         tropas = (ArrayList<Tropa>) TropaService.ObterTropas();
         mapas = (ArrayList<Mapa>) MapaService.ObterMapas();
 
         wayHitBoxes = new Array<>();
         menuHitBoxes = new Array<>();
 
+        statusGame = 1;
+
         optionWay();
         createMenuTroops();
     }
-    public void resize(int Width,int Height) {
-        viewport.update(Width,Height,true);
+
+    @Override
+    public void resize(int width, int height) {
+        viewport.update(width, height, true);
     }
+
     @Override
     public void render() {
+        // Atualiza posição do cursor sempre (mesmo sem clicar) para permitir "seguir o mouse"
+        updateMouseWorldPos();
 
+        // Processa input (cliques)
         input();
+
+        // Lógica (pode deixar vazia ou para futuras atualizações)
         logic();
+
+        // Desenha em camadas
         draw();
     }
 
-    private void input() {
-        if(Gdx.input.isTouched()) {
-            clickpos.set(Gdx.input.getX(), Gdx.input.getY());
-            viewport.unproject(clickpos);
-        }
+    private void updateMouseWorldPos() {
+        // Atualiza clickpos para a posição atual do mouse/tela (sempre)
+        clickpos.set(Gdx.input.getX(), Gdx.input.getY());
+        viewport.unproject(clickpos);
     }
-    private void logic() {
-        boolean colidiu = false;
-        for(Tropa t : tropas) {
-            Sprite selecionado = t.getTropa();
-            if(selecionado.getY() <= clickpos.y && (selecionado.getY()+1) >= clickpos.y && selecionado.getX() <= clickpos.x && (selecionado.getX()+1) >= clickpos.x) {
-                selecionado.setCenter(clickpos.x, clickpos.y);
-                Rectangle tropaHitBox = new Rectangle();
-                tropaHitBox.set(selecionado.getX(),selecionado.getY(),1,1);
-                for(Rectangle w : wayHitBoxes) {
-                    if (tropaHitBox.overlaps(w)) {
-                        colidiu = true;
-                    }
-                }
-                if(!colidiu){
-                    for(Rectangle m : menuHitBoxes) {
-                        if(tropaHitBox.overlaps(m)){
-                            colidiu = true;
-                        }
-                    }
-                    if (!colidiu && !Gdx.input.isTouched()) {
 
-                        int cellX = (int)Math.floor(clickpos.x);
-                        int cellY = (int)Math.floor(clickpos.y);
+    private void input() {
+        // Apenas no instante do clique
+        if (Gdx.input.justTouched()) {
+            processarClique();
+        }
 
-                        selecionado.setPosition(cellX, cellY);
-
-                        System.out.println(t.getAlcance());
-                        t.setNivel(2);
-                        gerarAlcance(t);
-
-                    }
-                }
+        // Se há tropa selecionada e aguardando posicionamento, ela acompanha o cursor
+        if (aguardandoPosicionamento && tropaSelecionada != null) {
+            Sprite s = tropaSelecionada.getTropa();
+            if (s != null) {
+                s.setCenter(clickpos.x, clickpos.y);
             }
         }
     }
-    private void draw(){
+
+    private void logic() {
+        // atualmente sem lógica pesada por frame; mantido para compatibilidade
+        // aqui você poderia atualizar inimigos, animações, etc.
+    }
+
+    private void draw() {
         ScreenUtils.clear(Color.BLACK);
         viewport.apply();
         telaJog.setProjectionMatrix(viewport.getCamera().combined);
         telaJog.begin();
+
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
 
-        telaJog.draw(backgroundTexture,0,0,worldWidth,worldHeight);
-        for(Sprite waySprite : waySprites){
+        // Fundo
+        telaJog.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
+
+        // Caminho
+        for (Sprite waySprite : waySprites) {
             waySprite.draw(telaJog);
         }
-        for(Sprite menuSprite : menuSprites){
+
+        // Menu (fundo dos blocos)
+        for (Sprite menuSprite : menuSprites) {
             menuSprite.draw(telaJog);
         }
-        for(Sprite tropaSprite : tropaSprites) {
+
+        // Tropas
+        for (Sprite tropaSprite : tropaSprites) {
             tropaSprite.draw(telaJog);
         }
-        for(Sprite alcanceTropa : alcanceSprites) {
+
+        // Alcance (desenha por cima das tropas)
+        for (Sprite alcanceTropa : alcanceSprites) {
             alcanceTropa.draw(telaJog);
         }
+
         telaJog.end();
     }
-    private void optionWay(){
-        String mapaEscolhido = "Planicie Alvorada"; // Substituir futuramente por um get de uma classe menu
-        int dificuldade = 1; // Substituir futuramente por um get de uma classe menu
+
+    private void optionWay() {
+        String mapaEscolhido = "Planicie Alvorada"; // ajuste futuro via menu
+        int dificuldade = 1; // ajuste futuro via menu
         float wayWidth = 1;
         float wayHeight = 1;
-        for(Mapa m : mapas) {
-            if(m.getNome().equals(mapaEscolhido)) {
-                if (m.getDifficult() == dificuldade) {
-                    for (Vector2 pos : m.getCaminho()) {
 
-                        Sprite waySprite = new Sprite(wayTexture);
-                        waySprite.setSize(wayWidth, wayHeight);
-                        waySprite.setPosition(pos.x, pos.y);
-                        Rectangle wayHitbox = new Rectangle();
-                        wayHitbox.set(pos.x, pos.y, wayWidth,wayHeight);
-                        wayHitBoxes.add(wayHitbox);
-                        waySprites.add(waySprite);
-                    }
+        for (Mapa m : mapas) {
+            if (m.getNome().equals(mapaEscolhido) && m.getDifficult() == dificuldade) {
+                for (Vector2 pos : m.getCaminho()) {
+                    Sprite waySprite = new Sprite(wayTexture);
+                    waySprite.setSize(wayWidth, wayHeight);
+                    waySprite.setPosition(pos.x, pos.y);
+                    gerarHitbox(wayHitBoxes, pos.x, pos.y);
+                    waySprites.add(waySprite);
                 }
             }
         }
     }
+
     private void createMenuTroops() {
         float posWidth = 0;
         float width = 1;
         float height = 1;
-        float worldHeight = viewport.getWorldHeight();
-        for(int i =0;i<worldHeight;i++){
-            Sprite block = new Sprite(backgroundTextureMenu);
-            block.setSize(width,height);
-            block.setPosition(posWidth,i);
-            Rectangle menuHitBox = new Rectangle();
-            menuHitBox.set(posWidth,i,width,height);
-            menuHitBoxes.add(menuHitBox);
-            menuSprites.add(block);
-            if(i == 2 || i == 4) {
-                Tropa t = i == 2 ? tropas.get(0) : tropas.get(1);
-                t.setStatus(0); // Tem que alterar essa parte de definição de ativo e nativo através da função de tiro
+        int worldHeight = (int) viewport.getWorldHeight();
 
-                Sprite tropa = new Sprite(t.getTextura());
-                tropa.setSize(width,height);
-                tropa.setPosition(posWidth,i);
-                t.setTropa(tropa);
-                tropaSprites.add(tropa) ;
+        // Primeira coluna (posWidth = 0)
+        for (int i = 0; i < worldHeight; i++) {
+            gerarSprite(menuSprites, posWidth, i, backgroundTextureMenu);
+            gerarHitbox(menuHitBoxes, posWidth, i);
+
+            if (i == 2 || i == 4) {
+                int idx = (i == 2) ? 0 : 1;
+                if (idx < tropas.size()) {
+                    Tropa t = tropas.get(idx);
+                    t.setStatus(0); // disponível para posicionar
+                    Sprite tropa = new Sprite(t.getTextura());
+                    tropa.setSize(width, height);
+                    tropa.setPosition(posWidth, i);
+                    t.setTropa(tropa);
+                    tropaSprites.add(tropa);
+                }
             }
-
         }
-        for(int i = 0; i<worldHeight;i++) {
-            Sprite block = new Sprite(backgroundTextureMenu);
-            block.setSize(width, height);
-            block.setPosition((posWidth + 1), i);
-            menuSprites.add(block);
+
+        // Segunda coluna (posWidth = 1)
+        for (int i = 0; i < worldHeight; i++) {
+            gerarSprite(menuSprites, posWidth + 1, i, backgroundTextureMenu);
+            gerarHitbox(menuHitBoxes, posWidth + 1, i);
         }
     }
+
+    // criando um retângulo a partir do sprite
+    public Rectangle gerarHitboxes(Sprite anySprite) {
+        return new Rectangle(anySprite.getX(), anySprite.getY(), 1, 1);
+    }
+
+    // adicionar hitbox a um array
+    public void gerarHitbox(Array<Rectangle> anyArray, float posX, float posY) {
+        Rectangle hitBox = new Rectangle(posX, posY, 1, 1);
+        anyArray.add(hitBox);
+    }
+
+    // helper para criar sprite simples
+    public void gerarSprite(Array<Sprite> anyArray, float posX, float posY, Texture anyTexture) {
+        Sprite sprite = new Sprite(anyTexture);
+        sprite.setSize(1, 1);
+        sprite.setPosition(posX, posY);
+        anyArray.add(sprite);
+    }
+
+    /**
+     * Gera o alcance visual (limpa antes)
+     */
     public void gerarAlcance(Tropa tr) {
+        alcanceSprites.clear();
+
         Sprite t = tr.getTropa();
+        if (t == null) return;
+
         float tx = t.getX();
         float ty = t.getY();
-        // cada tile tem tamanho 1x1
-        float tileSize = 1f;
-        int alcance = (int)tr.getAlcance();
+
+        float tamanhoTropa = 1f;
+        int alcance = Math.max(0, (int) tr.getAlcance());
 
         Vector2 centro = new Vector2(tx, ty);
         Vector2 ponto = new Vector2();
 
         for (int x = -alcance; x <= alcance; x++) {
             for (int y = -alcance; y <= alcance; y++) {
-
-                // posição do tile analisado
                 float px = tx + x;
                 float py = ty + y;
 
-                // calcula distância do centro usando Vector2.dst
                 ponto.set(px, py);
                 float distancia = ponto.dst(centro);
 
-                // verifica se está dentro do círculo
                 if (distancia <= alcance && !(x == 0 && y == 0)) {
-
                     Sprite s = new Sprite(rangeTexture);
-                    s.setSize(tileSize, tileSize);
+                    s.setSize(tamanhoTropa, tamanhoTropa);
                     s.setPosition(px, py);
                     alcanceSprites.add(s);
                 }
             }
         }
+    }
+
+    /**
+     * Processa o clique do jogador:
+     * - se já estava aguardando posicionamento: tenta posicionar a tropa selecionada
+     * - senão: tenta selecionar uma tropa (para posicionar) ou mostrar alcance se já posicionada
+     */
+    private void processarClique() {
+        // Se estava aguardando posicionamento -> tentar colocar a tropa selecionada
+        if (aguardandoPosicionamento && tropaSelecionada != null) {
+            // cria hitbox na célula onde o jogador clicou (faixa inteira)
+            int cellX = (int) Math.floor(clickpos.x);
+            int cellY = (int) Math.floor(clickpos.y);
+
+            Rectangle tropa = new Rectangle(cellX, cellY, 1, 1);
+
+            if (!colide(tropa)) {
+                // posiciona corretamente na grade
+                tropaSelecionada.getTropa().setPosition(cellX, cellY);
+                tropaSelecionada.setStatus(1);
+                // limpa seleção e alcance
+                tropaSelecionada = null;
+                aguardandoPosicionamento = false;
+                alcanceSprites.clear();
+            } else {
+                // Se colidiu, não posiciona; apenas mantém selecionada
+                // (você pode colocar som/feedback aqui)
+            }
+
+            return;
+        }
+
+        // Não estava posicionando -> verificar clique em tropas/menu
+        boolean clicouEmAlgo = false;
+
+        for (Tropa t : tropas) {
+            Sprite s = t.getTropa();
+            if (s == null) continue;
+
+            Rectangle hb = gerarHitboxes(s);
+            if (hb.contains(clickpos.x, clickpos.y)) {
+                clicouEmAlgo = true;
+
+                // Se tropa já posicionada, mostrar alcance
+                if (t.getStatus() == 1) {
+                    alcanceSprites.clear();
+                    gerarAlcance(t);
+                }
+
+                // Se tropa não posicionada, selecionar para posicionar
+                if (t.getStatus() == 0) {
+                    tropaSelecionada = t;
+                    aguardandoPosicionamento = true;
+                    // a tropa começará a seguir o mouse no input()
+                }
+
+                break; // achou algo, não precisa continuar
+            }
+        }
+
+        if (!clicouEmAlgo) {
+            // Clique fora de tropas → limpar alcance e cancelar seleção
+            alcanceSprites.clear();
+            tropaSelecionada = null;
+            aguardandoPosicionamento = false;
+        }
+    }
+
+    /**
+     * Retorna true se o retângulo colide com caminho/menu ou com os limites do mundo
+     */
+    private boolean colide(Rectangle box) {
+        // limites do mundo
+        if (box.x < 0 || box.y < 0) return true;
+        if (box.x + box.width > viewport.getWorldWidth()) return true;
+        if (box.y + box.height > viewport.getWorldHeight()) return true;
+
+        // colisão com way
+        for (Rectangle w : wayHitBoxes) {
+            if (w.overlaps(box)) return true;
+        }
+
+        // colisão com menu
+        for (Rectangle m : menuHitBoxes) {
+            if (m.overlaps(box)) return true;
+        }
+
+        return false;
+    }
+
+    @Override
+    public void dispose() {
+        // liberar recursos
+        if (telaJog != null) telaJog.dispose();
+        if (backgroundTexture != null) backgroundTexture.dispose();
+        if (wayTexture != null) wayTexture.dispose();
+        if (backgroundTextureMenu != null) backgroundTextureMenu.dispose();
+        if (rangeTexture != null) rangeTexture.dispose();
     }
 }
