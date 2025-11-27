@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class Tropa {
-
+    private Tropa clone;
     private Sprite tropa;
     private Texture textura;
     private String nome;
@@ -66,5 +66,15 @@ public class Tropa {
 
     public void setNivel(int nivel) {
         this.nivel = nivel;
+    }
+
+    public Tropa getClone(){
+        Tropa tc = new Tropa();
+        tc.setNome(this.getNome());
+        tc.setNivel(this.getNivel());
+        tc.setDano(this.getDano());
+        tc.setAlcance(this.getAlcance());
+        tc.setTextura(this.getTextura());
+        return tc ;
     }
 }

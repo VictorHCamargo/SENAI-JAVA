@@ -8,6 +8,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.utils.Array;
 import com.badlogic.gdx.utils.ScreenUtils;
 import com.badlogic.gdx.utils.viewport.FitViewport;
@@ -45,7 +48,7 @@ public class Main extends ApplicationAdapter {
     Array<Rectangle> wayHitBoxes;
     Array<Rectangle> menuHitBoxes;
 
-    int statusGame; // 1 - jogo normal / 2 - posicionamento (mantido para compatibilidade)
+    int statusGame; // 1 - jogo normal / 2 - posicionamento
 
     // Novas variáveis de seleção/posicionamento
     Tropa tropaSelecionada = null;
@@ -58,7 +61,7 @@ public class Main extends ApplicationAdapter {
         backgroundTexture = new Texture("background.png");
         backgroundTextureMenu = new Texture("background_menu_troops.png");
 
-        viewport = new FitViewport(60, 45);
+        viewport = new FitViewport(18, 15);
 
         telaJog = new SpriteBatch();
         waySprites = new Array<>();
@@ -88,18 +91,17 @@ public class Main extends ApplicationAdapter {
 
     @Override
     public void render() {
-        // Atualiza posição do cursor sempre (mesmo sem clicar) para permitir "seguir o mouse"
         updateMouseWorldPos();
 
-        // Processa input (cliques)
         input();
 
-        // Lógica (pode deixar vazia ou para futuras atualizações)
+
         logic();
 
-        // Desenha em camadas
         draw();
     }
+
+
 
     private void updateMouseWorldPos() {
         // Atualiza clickpos para a posição atual do mouse/tela (sempre)
@@ -123,8 +125,6 @@ public class Main extends ApplicationAdapter {
     }
 
     private void logic() {
-        // atualmente sem lógica pesada por frame; mantido para compatibilidade
-        // aqui você poderia atualizar inimigos, animações, etc.
     }
 
     private void draw() {
@@ -136,25 +136,23 @@ public class Main extends ApplicationAdapter {
         float worldWidth = viewport.getWorldWidth();
         float worldHeight = viewport.getWorldHeight();
 
-        // Fundo
+
         telaJog.draw(backgroundTexture, 0, 0, worldWidth, worldHeight);
 
-        // Caminho
+
         for (Sprite waySprite : waySprites) {
             waySprite.draw(telaJog);
         }
 
-        // Menu (fundo dos blocos)
+
         for (Sprite menuSprite : menuSprites) {
             menuSprite.draw(telaJog);
         }
 
-        // Tropas
         for (Sprite tropaSprite : tropaSprites) {
             tropaSprite.draw(telaJog);
         }
 
-        // Alcance (desenha por cima das tropas)
         for (Sprite alcanceTropa : alcanceSprites) {
             alcanceTropa.draw(telaJog);
         }
@@ -187,7 +185,6 @@ public class Main extends ApplicationAdapter {
         float height = 1;
         int worldHeight = (int) viewport.getWorldHeight();
 
-        // Primeira coluna (posWidth = 0)
         for (int i = 0; i < worldHeight; i++) {
             gerarSprite(menuSprites, posWidth, i, backgroundTextureMenu);
             gerarHitbox(menuHitBoxes, posWidth, i);
@@ -206,7 +203,6 @@ public class Main extends ApplicationAdapter {
             }
         }
 
-        // Segunda coluna (posWidth = 1)
         for (int i = 0; i < worldHeight; i++) {
             gerarSprite(menuSprites, posWidth + 1, i, backgroundTextureMenu);
             gerarHitbox(menuHitBoxes, posWidth + 1, i);
@@ -232,9 +228,7 @@ public class Main extends ApplicationAdapter {
         anyArray.add(sprite);
     }
 
-    /**
-     * Gera o alcance visual (limpa antes)
-     */
+
     public void gerarAlcance(Tropa tr) {
         alcanceSprites.clear();
 
@@ -267,12 +261,6 @@ public class Main extends ApplicationAdapter {
             }
         }
     }
-
-    /**
-     * Processa o clique do jogador:
-     * - se já estava aguardando posicionamento: tenta posicionar a tropa selecionada
-     * - senão: tenta selecionar uma tropa (para posicionar) ou mostrar alcance se já posicionada
-     */
     private void processarClique() {
         // Se estava aguardando posicionamento -> tentar colocar a tropa selecionada
         if (aguardandoPosicionamento && tropaSelecionada != null) {
@@ -309,34 +297,29 @@ public class Main extends ApplicationAdapter {
             if (hb.contains(clickpos.x, clickpos.y)) {
                 clicouEmAlgo = true;
 
-                // Se tropa já posicionada, mostrar alcance
+
                 if (t.getStatus() == 1) {
                     alcanceSprites.clear();
                     gerarAlcance(t);
                 }
 
-                // Se tropa não posicionada, selecionar para posicionar
                 if (t.getStatus() == 0) {
                     tropaSelecionada = t;
                     aguardandoPosicionamento = true;
-                    // a tropa começará a seguir o mouse no input()
                 }
 
-                break; // achou algo, não precisa continuar
+                break;
             }
         }
 
         if (!clicouEmAlgo) {
-            // Clique fora de tropas → limpar alcance e cancelar seleção
             alcanceSprites.clear();
             tropaSelecionada = null;
             aguardandoPosicionamento = false;
         }
     }
 
-    /**
-     * Retorna true se o retângulo colide com caminho/menu ou com os limites do mundo
-     */
+
     private boolean colide(Rectangle box) {
         // limites do mundo
         if (box.x < 0 || box.y < 0) return true;
@@ -355,6 +338,10 @@ public class Main extends ApplicationAdapter {
 
         return false;
     }
+    
+
+
+
 
     @Override
     public void dispose() {
